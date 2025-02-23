@@ -1,19 +1,20 @@
-import faiss
+
 import numpy as np
+import faiss
 from typing import List, Dict
-from langchain_community.embeddings import OpenAIEmbeddings
-from langchain.docstore.document import Document
+from sentence_transformers import SentenceTransformer
+from langchain_core.documents import Document
 
 class VectorStore:
     def __init__(self):
-        self.embeddings = OpenAIEmbeddings()
+        self.embeddings = SentenceTransformer('all-MiniLM-L6-v2')
         self.index = None
         self.documents = []
 
     def add_documents(self, documents: List[Document]):
         """Add documents to the vector store."""
         try:
-            embeddings = self.embeddings.embed_documents([doc.page_content for doc in documents])
+            embeddings = self.embeddings.encode([doc.page_content for doc in documents])
             if self.index is None:
                 dimension = len(embeddings[0])
                 self.index = faiss.IndexFlatL2(dimension)
@@ -29,7 +30,7 @@ class VectorStore:
         if not self.index:
             return []
 
-        query_embedding = self.embeddings.embed_query(query)
+        query_embedding = self.embeddings.encode([query])[0]
         D, I = self.index.search(np.array([query_embedding]), k)
 
         results = []

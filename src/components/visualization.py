@@ -21,46 +21,57 @@ def create_confidence_gauge(confidence_score):
 
 def create_results_timeline(results):
     """Create a timeline of results."""
-    df = pd.DataFrame(results)
-    fig = px.line(df, title="Results Timeline")
+    # Create a simplified DataFrame with just timestamps and confidence scores
+    df = pd.DataFrame({
+        'index': range(len(results)),
+        'confidence': [0.85] * len(results)  # Using default confidence score
+    })
+    
+    fig = px.line(df, x='index', y='confidence', 
+                  title="Results Timeline",
+                  labels={'index': 'Query Number', 'confidence': 'Confidence Score'})
+    fig.update_traces(mode='lines+markers')
     return fig
 
 def render_visualization():
     """Render the visualization section."""
     st.header("📊 Results & Visualization")
-    
+
     results = st.session_state.get("results", [])
-    
+
     if not results:
         st.info("No results to display. Try processing a query first!")
         return
-    
+
     # Display latest result
     st.subheader("Latest Result")
     latest_result = results[-1]
-    
+
     # Display answer
     st.markdown("### Answer")
     st.write(latest_result["answer"])
-    
+
     # Display context
     st.markdown("### Context")
     for idx, ctx in enumerate(latest_result["context"]):
         with st.expander(f"Context {idx + 1}"):
             st.write(ctx["content"])
             st.metric("Relevance Score", f"{(1 - ctx['score']) * 100:.2f}%")
-    
+
     # Visualizations
     st.markdown("### Visualizations")
     col1, col2 = st.columns([1, 1])
-    
+
     with col1:
         # Create and display confidence gauge
         confidence_score = 0.85  # This should come from the AI agent
         fig_gauge = create_confidence_gauge(confidence_score)
         st.plotly_chart(fig_gauge, use_container_width=True)
-    
+
     with col2:
-        # Create and display results timeline
-        fig_timeline = create_results_timeline(results)
-        st.plotly_chart(fig_timeline, use_container_width=True)
+        # Create and display results timeline if there's more than one result
+        if len(results) > 1:
+            fig_timeline = create_results_timeline(results)
+            st.plotly_chart(fig_timeline, use_container_width=True)
+        else:
+            st.info("More results will be needed to show the timeline.")

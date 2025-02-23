@@ -1,7 +1,9 @@
 from typing import List, Dict
 import pandas as pd
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.docstore.document import Document
+import PyPDF2
+import io
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_core.documents import Document
 
 class DocumentProcessor:
     def __init__(self):
@@ -13,8 +15,12 @@ class DocumentProcessor:
 
     def process_text(self, text: str) -> List[Document]:
         """Process raw text into chunks."""
-        chunks = self.text_splitter.create_documents([text])
-        return chunks
+        try:
+            documents = [Document(page_content=text)]
+            chunks = self.text_splitter.split_documents(documents)
+            return chunks
+        except Exception as e:
+            raise Exception(f"Error processing text: {str(e)}")
 
     def process_file(self, file) -> List[Document]:
         """Process uploaded file into chunks."""
@@ -23,8 +29,11 @@ class DocumentProcessor:
                 text = str(file.read(), "utf-8")
                 return self.process_text(text)
             elif file.type == "application/pdf":
-                # Add PDF processing logic here
-                raise NotImplementedError("PDF processing not implemented yet")
+                pdf_reader = PyPDF2.PdfReader(io.BytesIO(file.read()))
+                text = ""
+                for page in pdf_reader.pages:
+                    text += page.extract_text()
+                return self.process_text(text)
             else:
                 raise ValueError(f"Unsupported file type: {file.type}")
         except Exception as e:
