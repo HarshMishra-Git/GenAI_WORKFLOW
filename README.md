@@ -1,6 +1,6 @@
 # GenAI Workflow System
 
-![GenAI Workflow System](https://user-images.githubusercontent.com/HarshMishra-Git/GenAI_WORKFLOW/main/genai_workflow_banner.png)
+![GenAI Workflow System](https://github.com/HarshMishra-Git/GenAI_WORKFLOW/blob/main/genai_workflow_banner.png)
 
 ## Introduction
 
