@@ -63,7 +63,7 @@ To run the GenAI Workflow System locally, follow these steps:
     - `visualization.py`
 - **src/main.py**: The main module that orchestrates the entire application.
 
-##System Architecture
+## System Architecture
 
 ```mermaid
 flowchart TD
