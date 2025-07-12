@@ -63,16 +63,48 @@ To run the GenAI Workflow System locally, follow these steps:
     - `visualization.py`
 - **src/main.py**: The main module that orchestrates the entire application.
 
+##System Architecture
+
+```mermaid
+flowchart TD
+    User[User (Web)] -- interacts --> Streamlit[Streamlit UI]
+    Streamlit -- document upload --> DocUpload[Document Upload Module]
+    Streamlit -- query input --> QueryInterface[Query Interface Module]
+    Streamlit -- settings/config export --> Sidebar[Sidebar Module]
+    Streamlit -- visualizes --> Visualization[Visualization Module]
+
+    DocUpload -- processes docs --> PDF2[PyPDF2]
+    DocUpload -- creates embeddings --> SentenceTransformers[sentence-transformers]
+    DocUpload -- stores vectors --> FAISS[FAISS Vector Store]
+    DocUpload -- stores metadata --> Pandas[Pandas]
+
+    QueryInterface -- retrieves vectors --> FAISS
+    QueryInterface -- orchestrates retrieval --> Langchain[Langchain]
+    QueryInterface -- calls LLM --> OpenAI[OpenAI API]
+    QueryInterface -- calls LLM --> HF[Hugging Face Transformers]
+    QueryInterface -- uses --> Torch[PyTorch]
+    QueryInterface -- uses --> tiktoken[tiktoken]
+
+    QueryInterface -- sends results --> Visualization
+    Visualization -- plots --> Plotly[Plotly]
+
+    Sidebar -- exports results --> Export[Export (CSV/JSON/Excel)]
+```
+
 ## Technologies Used
 
 - **Python**: The primary programming language.
 - **Streamlit**: For creating the web application interface.
 - **FAISS**: For efficient similarity search and clustering of dense vectors.
 - **OpenAI**: For interacting with OpenAI models.
-- **Plotly**: For creating interactive visualizations.
-- **Pandas**: For data manipulation and analysis.
-- **PyTorch**: For deep learning models.
 - **Hugging Face Transformers**: For state-of-the-art natural language processing.
+- **Langchain**: For chaining and orchestrating LLMs and retrieval-augmented generation.
+- **PyTorch**: For deep learning models.
+- **sentence-transformers**: For generating embeddings for semantic search.
+- **Pandas**: For data manipulation and analysis.
+- **Plotly**: For creating interactive visualizations.
+- **PyPDF2**: For reading and processing PDF files.
+- **tiktoken**: For text tokenization and counting tokens.
 
 ## Contribution
 
