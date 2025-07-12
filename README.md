@@ -67,28 +67,28 @@ To run the GenAI Workflow System locally, follow these steps:
 
 ```mermaid
 flowchart TD
-    User[User (Web)] -- interacts --> Streamlit[Streamlit UI]
-    Streamlit -- document upload --> DocUpload[Document Upload Module]
-    Streamlit -- query input --> QueryInterface[Query Interface Module]
-    Streamlit -- settings/config export --> Sidebar[Sidebar Module]
-    Streamlit -- visualizes --> Visualization[Visualization Module]
+    user(User) --> streamlit[Streamlit UI]
+    streamlit --> doc_upload[Document Upload Module]
+    streamlit --> query_interface[Query Interface Module]
+    streamlit --> sidebar[Sidebar Module]
+    streamlit --> visualization[Visualization Module]
 
-    DocUpload -- processes docs --> PDF2[PyPDF2]
-    DocUpload -- creates embeddings --> SentenceTransformers[sentence-transformers]
-    DocUpload -- stores vectors --> FAISS[FAISS Vector Store]
-    DocUpload -- stores metadata --> Pandas[Pandas]
+    doc_upload --> pypdf2[PyPDF2]
+    doc_upload --> sentence_transformers[sentence-transformers]
+    doc_upload --> faiss[FAISS Vector Store]
+    doc_upload --> pandas[Pandas]
 
-    QueryInterface -- retrieves vectors --> FAISS
-    QueryInterface -- orchestrates retrieval --> Langchain[Langchain]
-    QueryInterface -- calls LLM --> OpenAI[OpenAI API]
-    QueryInterface -- calls LLM --> HF[Hugging Face Transformers]
-    QueryInterface -- uses --> Torch[PyTorch]
-    QueryInterface -- uses --> tiktoken[tiktoken]
+    query_interface --> faiss
+    query_interface --> langchain[Langchain]
+    query_interface --> openai[OpenAI API]
+    query_interface --> hf[Hugging Face Transformers]
+    query_interface --> torch[PyTorch]
+    query_interface --> tiktoken[tiktoken]
 
-    QueryInterface -- sends results --> Visualization
-    Visualization -- plots --> Plotly[Plotly]
+    query_interface --> visualization
+    visualization --> plotly[Plotly]
 
-    Sidebar -- exports results --> Export[Export (CSV/JSON/Excel)]
+    sidebar --> export[Export CSV/JSON/Excel]
 ```
 
 ## Technologies Used
